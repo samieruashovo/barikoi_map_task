@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,7 +38,6 @@ class MapView extends StatelessWidget {
             BlocBuilder<LocationBloc, LocationState>(
               builder: (context, state) {
                 if (state is RouteLoaded) {
-                  print("state.routeCoords: ${state.routeCoordinates}");
                   return PolylineLayer(
                     polylines: [
                       Polyline(
@@ -103,12 +102,7 @@ class MapView extends StatelessWidget {
               return AddressPanel(
                 address: state.address.toString(),
                 onShowRoute: () {
-                  print("x");
-                  print("${state.prevLongitude}, ${state.prevLatitude}}");
-                  print("x");
-
-                  print("${state.longitude}, ${state.latitude}");
-                  print("x");
+    
 
                   context.read<LocationBloc>().add(ShowRouteEvent(
                         end: LatLng(state.latitude, state.longitude),
