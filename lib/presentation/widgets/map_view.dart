@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import '../../core/constants/constants.dart';
 import '../../domain/bloc/location_bloc.dart';
 import '../../domain/bloc/location_event.dart';
 import '../../domain/bloc/location_state.dart';
@@ -17,8 +18,6 @@ class MapView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double prevLatitude = latitude;
-    double prevLongitude = longitude;
     return Stack(
       children: [
         FlutterMap(
@@ -26,8 +25,6 @@ class MapView extends StatelessWidget {
             initialCenter: LatLng(latitude, longitude),
             onTap: (tapPosition, point) {
               context.read<LocationBloc>().add(MapClickedEvent(
-                    prevLatitude: prevLatitude,
-                    prevLongitude: prevLongitude,
                     latitude: point.latitude,
                     longitude: point.longitude,
                   ));
@@ -47,7 +44,7 @@ class MapView extends StatelessWidget {
                       Polyline(
                         points: state.routeCoordinates,
                         strokeWidth: 4.0,
-                        color: Colors.blue,
+                        color: bgColor,
                       ),
                     ],
                   );
@@ -61,8 +58,11 @@ class MapView extends StatelessWidget {
                   return MarkerLayer(
                     markers: [
                       Marker(
-                        child: const Icon(Icons.location_pin,
-                            color: Colors.blue, size: 40),
+                        child: const Icon(
+                          Icons.location_pin,
+                          color: pinColor,
+                          size: 40,
+                        ),
                         point: LatLng(state.latitude, state.longitude),
                       ),
                     ],
@@ -72,7 +72,7 @@ class MapView extends StatelessWidget {
                   markers: [
                     Marker(
                       child: const Icon(Icons.location_pin,
-                          color: Colors.blue, size: 40),
+                          color: Colors.green, size: 40),
                       point: LatLng(latitude, longitude),
                     ),
                   ],
@@ -87,7 +87,7 @@ class MapView extends StatelessWidget {
                       Polyline(
                         points: state.routeCoordinates,
                         strokeWidth: 4.0,
-                        color: Colors.blue,
+                        color: bgColor,
                       ),
                     ],
                   );
@@ -111,8 +111,6 @@ class MapView extends StatelessWidget {
                   print("x");
 
                   context.read<LocationBloc>().add(ShowRouteEvent(
-                        start:
-                            LatLng(state.prevLatitude!, state.prevLongitude!),
                         end: LatLng(state.latitude, state.longitude),
                       ));
                 },

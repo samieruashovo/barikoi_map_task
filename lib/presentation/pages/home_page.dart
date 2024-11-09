@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../core/constants/constants.dart';
 import '../../domain/bloc/location_bloc.dart';
 import '../../domain/bloc/location_state.dart';
 import '../widgets/map_view.dart';
@@ -11,7 +12,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: const Color(0xff00b369),
+          backgroundColor: bgColor,
           title: const Text(
             'Barikoi Map Task',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -32,8 +33,11 @@ class HomePage extends StatelessWidget {
             );
           } else if (state is RouteLoaded) {
             return MapView(
-              latitude: 23.868418095626627,
-              longitude: 90.38593184531253,
+              latitude: state
+                  .routeCoordinates[state.routeCoordinates.length - 1].latitude,
+              longitude: state
+                  .routeCoordinates[state.routeCoordinates.length - 1]
+                  .longitude,
             );
           } else if (state is LocationPermissionDenied) {
             return const Center(

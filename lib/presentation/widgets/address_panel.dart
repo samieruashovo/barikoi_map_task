@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/constants/constants.dart';
+
 class AddressPanel extends StatelessWidget {
   final String address;
   final VoidCallback onShowRoute;
@@ -14,22 +16,30 @@ class AddressPanel extends StatelessWidget {
       left: 10,
       right: 10,
       child: Card(
-        child: Column(
-          children: [
-            ElevatedButton(
-                onPressed: onShowRoute, child: const Text("Show Route")),
-            Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(9)),
-                color: Color(0xff00b369),
-              ),
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
+        child: Container(
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(9)),
+            color: bgColor,
+          ),
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
                 address,
                 style: const TextStyle(color: Colors.white),
               ),
-            ),
-          ],
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0, backgroundColor: btnBgColor),
+                  onPressed: onShowRoute,
+                  child: const Text(
+                    "Show Route",
+                    style: TextStyle(color: Colors.white),
+                  )),
+            ],
+          ),
         ),
       ),
     );

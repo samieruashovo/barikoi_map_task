@@ -1,4 +1,4 @@
-import 'package:barikoi_map_task/core/constants/api_keys.dart';
+import 'package:barikoi_map_task/core/constants/constants.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -20,49 +20,24 @@ class LocationRepository {
     }
   }
 
-// final url =
-//         'https://barikoi.xyz/v2/api/routing?key=$BARIKOI_API_KEY&type=vh';
   Future<List<LatLng>> getRoute({
     required double startLat,
     required double startLng,
     required double destLat,
     required double destLng,
   }) async {
-    print("xx");
-    print("$startLng, $startLat, $destLng $destLat");
-    print("xx");
-
     final url =
-        'https://barikoi.xyz/v2/api/route/$startLng,$startLat;$destLng,$destLat?api_key=bkoi_bdeca134e232acf7e3a84f237b124c93cc66c5cd138e7ebbf09ee2599c4ec10f&geometries=polyline';
+        'https://barikoi.xyz/v2/api/route/$startLng,$startLat;$destLng,$destLat?api_key=$BARIKOI_API_KEY&geometries=polyline';
 
     final headers = {
       'Content-Type': 'application/json',
     };
 
-    // final body = jsonEncode({
-    //   "data": {
-    //     "start": {
-    //       "latitude": startLat,
-    //       "longitude": startLng,
-    //     },
-    //     "destination": {
-    //       "latitude": destLat,
-    //       "longitude": destLng,
-    //     }
-    //   }
-    // });
-
     final response = await http.get(Uri.parse(url), headers: headers);
-    print(response.body);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
-      print('API Response: ${response.body}');
-
       final encodedPolyline = data['routes'][0]['geometry'];
-      print("de");
-      print(_decodePolyline(encodedPolyline));
-      print("de");
 
       return _decodePolyline(encodedPolyline);
     } else {
