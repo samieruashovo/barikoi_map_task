@@ -73,7 +73,9 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       emit(AddressLoaded(
           address: address,
           latitude: event.latitude,
-          longitude: event.longitude));
+          longitude: event.longitude,
+          prevLatitude: event.prevLatitude,
+          prevLongitude: event.prevLongitude));
     } catch (e) {
       print("Error fetching address: $e");
       emit(AddressLoadFailed());

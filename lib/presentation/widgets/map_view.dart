@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -15,6 +17,8 @@ class MapView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double prevLatitude = latitude;
+    double prevLongitude = longitude;
     return Stack(
       children: [
         FlutterMap(
@@ -22,6 +26,8 @@ class MapView extends StatelessWidget {
             initialCenter: LatLng(latitude, longitude),
             onTap: (tapPosition, point) {
               context.read<LocationBloc>().add(MapClickedEvent(
+                    prevLatitude: prevLatitude,
+                    prevLongitude: prevLongitude,
                     latitude: point.latitude,
                     longitude: point.longitude,
                   ));
@@ -31,6 +37,23 @@ class MapView extends StatelessWidget {
             TileLayer(
               urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
               subdomains: const ['a', 'b', 'c'],
+            ),
+            BlocBuilder<LocationBloc, LocationState>(
+              builder: (context, state) {
+                if (state is RouteLoaded) {
+                  print("state.routeCoords: ${state.routeCoordinates}");
+                  return PolylineLayer(
+                    polylines: [
+                      Polyline(
+                        points: state.routeCoordinates,
+                        strokeWidth: 4.0,
+                        color: Colors.blue,
+                      ),
+                    ],
+                  );
+                }
+                return const SizedBox.shrink();
+              },
             ),
             BlocBuilder<LocationBloc, LocationState>(
               builder: (context, state) {
@@ -80,8 +103,16 @@ class MapView extends StatelessWidget {
               return AddressPanel(
                 address: state.address.toString(),
                 onShowRoute: () {
+                  print("x");
+                  print("${state.prevLongitude}, ${state.prevLatitude}}");
+                  print("x");
+
+                  print("${state.longitude}, ${state.latitude}");
+                  print("x");
+
                   context.read<LocationBloc>().add(ShowRouteEvent(
-                        start: LatLng(latitude, longitude),
+                        start:
+                            LatLng(state.prevLatitude!, state.prevLongitude!),
                         end: LatLng(state.latitude, state.longitude),
                       ));
                 },

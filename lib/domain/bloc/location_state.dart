@@ -11,8 +11,14 @@ class LocationLoading extends LocationState {}
 class LocationLoaded extends LocationState {
   final double latitude;
   final double longitude;
+  double? prevLatitude;
+  double? prevLongitude;
 
-  LocationLoaded({required this.latitude, required this.longitude});
+  LocationLoaded(
+      {required this.latitude,
+      required this.longitude,
+      this.prevLatitude,
+      this.prevLongitude});
 }
 
 class LocationPermissionDenied extends LocationState {}
@@ -21,9 +27,15 @@ class AddressLoaded extends LocationState {
   final Address address;
   final double latitude;
   final double longitude;
+  double? prevLatitude;
+  double? prevLongitude;
 
   AddressLoaded(
-      {required this.address, required this.latitude, required this.longitude});
+      {required this.address,
+      required this.latitude,
+      required this.longitude,
+      this.prevLatitude,
+      this.prevLongitude});
 }
 
 class LocationLoadFailed extends LocationState {}

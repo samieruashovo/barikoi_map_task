@@ -22,10 +22,19 @@ class HomePage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           } else if (state is LocationLoaded) {
             return MapView(
-                latitude: state.latitude, longitude: state.longitude);
+              latitude: state.latitude,
+              longitude: state.longitude,
+            );
           } else if (state is AddressLoaded) {
             return MapView(
-                latitude: state.latitude, longitude: state.longitude);
+              latitude: state.latitude,
+              longitude: state.longitude,
+            );
+          } else if (state is RouteLoaded) {
+            return MapView(
+              latitude: 23.868418095626627,
+              longitude: 90.38593184531253,
+            );
           } else if (state is LocationPermissionDenied) {
             return const Center(
                 child: Text(

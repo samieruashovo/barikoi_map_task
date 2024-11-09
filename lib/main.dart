@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.green),
       home: BlocProvider(
         create: (_) => LocationBloc()..add(LocationPermissionCheckEvent()),
-        child: HomePage(),
+        child: const HomePage(),
       ),
     );
   }

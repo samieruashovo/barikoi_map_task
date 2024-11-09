@@ -1,4 +1,5 @@
 import 'package:barikoi_map_task/core/constants/api_keys.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -27,75 +28,54 @@ class LocationRepository {
     required double destLat,
     required double destLng,
   }) async {
+    print("xx");
+    print("$startLng, $startLat, $destLng $destLat");
+    print("xx");
+
     final url =
-        'https://barikoi.xyz/v2/api/routing?key=$BARIKOI_API_KEY&type=vh';
+        'https://barikoi.xyz/v2/api/route/$startLng,$startLat;$destLng,$destLat?api_key=bkoi_bdeca134e232acf7e3a84f237b124c93cc66c5cd138e7ebbf09ee2599c4ec10f&geometries=polyline';
 
     final headers = {
       'Content-Type': 'application/json',
     };
 
-    final body = jsonEncode({
-      "data": {
-        "start": {
-          "latitude": startLat,
-          "longitude": startLng,
-        },
-        "destination": {
-          "latitude": destLat,
-          "longitude": destLng,
-        }
-      }
-    });
+    // final body = jsonEncode({
+    //   "data": {
+    //     "start": {
+    //       "latitude": startLat,
+    //       "longitude": startLng,
+    //     },
+    //     "destination": {
+    //       "latitude": destLat,
+    //       "longitude": destLng,
+    //     }
+    //   }
+    // });
 
-    final response =
-        await http.post(Uri.parse(url), headers: headers, body: body);
-
+    final response = await http.get(Uri.parse(url), headers: headers);
+    print(response.body);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
       print('API Response: ${response.body}');
 
-      final polyline = data['trip']['legs'][0]['shape'] ??
-          ''; 
-      if (polyline.isNotEmpty) {
-        return _decodePolyline(polyline);
-      } else {
-        throw Exception('Polyline not found in API response');
-      }
+      final encodedPolyline = data['routes'][0]['geometry'];
+      print("de");
+      print(_decodePolyline(encodedPolyline));
+      print("de");
+
+      return _decodePolyline(encodedPolyline);
     } else {
       throw Exception('Failed to load route: ${response.statusCode}');
     }
   }
 
-  List<LatLng> _decodePolyline(String polyline) {
-    List<LatLng> coordinates = [];
-    int index = 0, len = polyline.length;
-    int lat = 0, lng = 0;
-
-    while (index < len) {
-      int b, shift = 0, result = 0;
-      do {
-        b = polyline.codeUnitAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-      lat += dlat;
-
-      shift = 0;
-      result = 0;
-      do {
-        b = polyline.codeUnitAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-      lng += dlng;
-
-      coordinates.add(LatLng(lat / 1E5, lng / 1E5));
-    }
-
-    return coordinates;
+  List<LatLng> _decodePolyline(String encoded) {
+    PolylinePoints polylinePoints = PolylinePoints();
+    List<PointLatLng> result = polylinePoints.decodePolyline(encoded);
+    return result
+        .map((point) => LatLng(point.latitude, point.longitude))
+        .toList();
   }
 }
 
