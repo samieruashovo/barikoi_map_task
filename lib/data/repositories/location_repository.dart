@@ -5,6 +5,8 @@ import 'dart:convert';
 
 import 'package:latlong2/latlong.dart';
 
+import '../models/address_model.dart';
+
 class LocationRepository {
   Future<Address> getAddress(double latitude, double longitude) async {
     final url =
@@ -54,30 +56,3 @@ class LocationRepository {
   }
 }
 
-class Address {
-  final String address;
-  final String area;
-  final String city;
-  final String country;
-
-  Address({
-    required this.address,
-    required this.area,
-    required this.city,
-    required this.country,
-  });
-
-  factory Address.fromJson(Map<String, dynamic> json) {
-    return Address(
-      address: json['address'] ?? 'Unknown address',
-      area: json['area'] ?? 'Unknown area',
-      city: json['city'] ?? 'Unknown city',
-      country: json['country'] ?? 'Unknown country',
-    );
-  }
-
-  @override
-  String toString() {
-    return "$address, $area, $city, $country";
-  }
-}

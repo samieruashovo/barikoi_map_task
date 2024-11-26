@@ -1,5 +1,6 @@
 import 'package:latlong2/latlong.dart';
 
+import '../../data/models/address_model.dart';
 import '../../data/repositories/location_repository.dart';
 
 abstract class LocationState {}
